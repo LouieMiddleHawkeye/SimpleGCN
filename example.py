@@ -96,58 +96,59 @@ def animate_embeddings(i, embeddings, ax):
     plt.title(f"Epoch {i} | Loss: {losses[i]:.2f} | Acc: {accuracies[i]*100:.2f}%", fontsize=18, pad=40)
 
 
-# Import dataset from PyTorch Geometric
-dataset = KarateClub()
+if __name__ == "__main__":
+    # Import dataset from PyTorch Geometric
+    dataset = KarateClub()
 
-# Print information
-print(dataset)
-print("------------")
-print(f"Number of graphs: {len(dataset)}")
-print(f"Number of features: {dataset.num_features}")
-print(f"Number of classes: {dataset.num_classes}")
+    # Print information
+    print(dataset)
+    print("------------")
+    print(f"Number of graphs: {len(dataset)}")
+    print(f"Number of features: {dataset.num_features}")
+    print(f"Number of classes: {dataset.num_classes}")
 
-data = dataset[0]  # Node feature matrix
+    data = dataset[0]  # Node feature matrix
 
-G = to_networkx(data, to_undirected=True)
-plt.figure(figsize=(12, 12))
-plt.axis("off")
-nx.draw_networkx(
-    G,
-    pos=nx.spring_layout(G, seed=0),
-    with_labels=True,
-    node_size=800,
-    node_color=data.y,
-    cmap="hsv",
-    vmin=-2,
-    vmax=3,
-    width=0.8,
-    edge_color="grey",
-    font_size=14,
-)
-plt.show()
+    G = to_networkx(data, to_undirected=True)
+    plt.figure(figsize=(12, 12))
+    plt.axis("off")
+    nx.draw_networkx(
+        G,
+        pos=nx.spring_layout(G, seed=0),
+        with_labels=True,
+        node_size=800,
+        node_color=data.y,
+        cmap="hsv",
+        vmin=-2,
+        vmax=3,
+        width=0.8,
+        edge_color="grey",
+        font_size=14,
+    )
+    plt.show()
 
-model = GCN(dataset)
-print(model)
+    model = GCN(dataset)
+    print(model)
 
-criterion = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.02)
+    criterion = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.02)
 
-embeddings, losses, accuracies, outputs = train(model, optimizer, criterion)
+    embeddings, losses, accuracies, outputs = train(model, optimizer, criterion)
 
-fig = plt.figure(figsize=(12, 12))
-plt.axis("off")
+    fig = plt.figure(figsize=(12, 12))
+    plt.axis("off")
 
-anim = animation.FuncAnimation(
-    fig, animate_training, np.arange(0, 200, 10), interval=500, repeat=True, fargs=(losses, accuracies, outputs)
-)
-plt.show()
+    anim = animation.FuncAnimation(
+        fig, animate_training, np.arange(0, 200, 10), interval=500, repeat=True, fargs=(losses, accuracies, outputs)
+    )
+    plt.show()
 
-fig = plt.figure(figsize=(12, 12))
-plt.axis("off")
-ax = fig.add_subplot(projection="3d")
-plt.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
+    fig = plt.figure(figsize=(12, 12))
+    plt.axis("off")
+    ax = fig.add_subplot(projection="3d")
+    plt.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
 
-anim = animation.FuncAnimation(
-    fig, animate_embeddings, np.arange(0, 200, 10), interval=800, repeat=True, fargs=(embeddings, ax)
-)
-plt.show()
+    anim = animation.FuncAnimation(
+        fig, animate_embeddings, np.arange(0, 200, 10), interval=800, repeat=True, fargs=(embeddings, ax)
+    )
+    plt.show()
