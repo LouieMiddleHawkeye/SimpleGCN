@@ -1,3 +1,6 @@
+/skeleton_gcn_model.pth
+/data/SGN_football.h5
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
