@@ -144,31 +144,23 @@ def train(x, y, edge_index, model, optimizer, criterion):
             x, _, batch_size, num_frames = prepare_data(batch_data, edge_index)
             x = x.to(device)
 
-            # Clear gradients
             optimizer.zero_grad()
 
-            # Forward pass
             h, z = model(x, edge_index, batch_size, num_frames)
 
-            # Calculate loss function
             loss = criterion(z, batch_labels)
 
-            # Calculate accuracy
             acc = accuracy(z, batch_labels)
 
-            # Compute gradients
             loss.backward()
 
-            # Tune parameters
             optimizer.step()
 
-            # Store data for animations
             embeddings.append(h)
             losses.append(loss)
             accuracies.append(acc)
             outputs.append(z.argmax(dim=1))
 
-    # Print metrics every 2 epochs
     if epoch % 2 == 0:
         print(f"Epoch {epoch:>3} | Loss: {loss:.2f} | Acc: {acc*100:.2f}%")
 

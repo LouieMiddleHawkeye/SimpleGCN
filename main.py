@@ -70,22 +70,17 @@ def train_model(
             batch_data = batch_data.to(device)
             batch_labels = batch_labels.to(device)
 
-            # Prepare data
             x, _, batch_size, num_frames = prepare_data(batch_data, edge_index)
             x = x.to(device)
 
-            # Forward pass
             optimizer.zero_grad()
             outputs = model(x, edge_index, batch_size, num_frames)
 
-            # Calculate loss
             loss = criterion(outputs, batch_labels)
 
-            # Backward pass
             loss.backward()
             optimizer.step()
 
-            # Store predictions and losses
             train_losses.append(loss.item())
             acc = accuracy(outputs, batch_labels)
             train_acc.append(acc.cpu())
@@ -125,12 +120,6 @@ def train_model(
         val_loss = np.mean(val_losses)
         val_acc = np.mean(val_acc)
 
-        # Calculate F1 score or other relevant metrics for multi-label
-        all_outputs = torch.cat(all_outputs, dim=0)
-        all_labels = torch.cat(all_labels, dim=0)
-        predictions = (all_outputs > 0.5).float()  # threshold predictions at 0.5
-        f1 = f1_score(val_labels.numpy(), predictions.numpy(), average="micro")
-
         # Update learning rate
         scheduler.step(val_loss)
 
@@ -142,7 +131,7 @@ def train_model(
         # Print progress
         print(f"Epoch [{epoch+1}/{num_epochs}]")
         print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}")
-        print(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}, Val F1: {f1:.4f}")
+        print(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
         print("--------------------")
 
     # Load best model
